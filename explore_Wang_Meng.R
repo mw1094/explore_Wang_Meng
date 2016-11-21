@@ -1,5 +1,31 @@
 library(ggplot2)
 library(grid)
+##Prof G - Failed for me.
+# > data("diamonds")
+# > explore(diamonds, 'grid', 0.3, c(10, 25, 50))
+# Hide Traceback
+# 
+# Rerun with Debug
+# Error in model.frame.default(formula = data_num[, i] ~ data_num[, j],  : 
+#                                invalid type (list) for variable 'data_num[, i]' 
+#                              8 model.frame.default(formula = data_num[, i] ~ data_num[, j], 
+#                                                    drop.unused.levels = TRUE) 
+#                              7 stats::model.frame(formula = data_num[, i] ~ data_num[, j], drop.unused.levels = TRUE) 
+#                              6 eval(expr, envir, enclos) 
+#                              5 eval(mf, parent.frame()) 
+#                              4 lm(data_num[, i] ~ data_num[, j]) 
+#                              3 summary(lm(data_num[, i] ~ data_num[, j])) at explore_Wang_Meng.R#80
+#                              2 r_squared(data) at explore_Wang_Meng.R#21
+#                              1 explore(diamonds, "grid", 0.3, c(10, 25, 50))
+
+##Prof G - Works much better but I got this error
+##Prof G - with the Loblolly dataset.
+# > data("Loblolly")
+# > explore(Loblolly, 'grid', 0.3, c(5, 10, 20))
+# Error in 1:ncol(dfm_cb) : argument of length 0
+
+##Prof G - Also, why do the factor bar graphs not plot
+##Prof G - in a grid?
 
 explore <- function(data, plotswitch = "off", threshold = 0, vector = NULL) {
   #This function is main function give all subfunctions result
@@ -282,59 +308,3 @@ plot_gray <- function(data, plotswitch='off') {
     }
   }
 }
-
-
-#hw 8
-# 5
-explore_2 <- function(data_frame,switch="off", threshold=0.5, vector=NULL){
-  # This function work with defensive conditions
-  
-  # parameter: dataframe(if no, change the input to dataframe. Details see below codes)
-  # return: explore function of fine parameter as inputs
-  
-  # omit the whole row if there are any nas
-  data_frame <- na.omit(data_frame)
-  
-  # change the parameter to dataframe if it is not a dataframe
-  if(!is.data.frame(data_frame)){                 
-    data_frame <- as.data.frame(data_frame)
-  }
-  
-  # if the second parameter is not 'on', 'off' or 'grid', ask users to re-input
-  while(switch != "off" && switch != "on" && switch != "grid"){  
-    print("invalid input for switch")
-    switch <- readline(prompt="Enter your option(off / on / grid): ")  #re-enter the input
-  }
-  
-  # if the second parameter is not in [0,1], ask users to re-input
-  while(!is.numeric(threshold) || threshold < 0 || threshold >1 ){    #check to see if threshold is a valid input
-    print("correlation threshold must be numeric and in range [0,1]")
-    threshold <- as.numeric(readline(prompt="Enter your correlation threshold: "))   #re-enter the input
-  }
-  
-  # check if bin vector is all numeric and all not less than 0, if so, ask users to re-input
-  if(!is.null(vector)){
-    if(!is.numeric(vector)||(is.numeric(vector) && (TRUE %in% (vector <= 0)))){ 
-      print("the bins vector must be numeric vector and not less than 0, please enter new bins one by one and press 'return' to finish")
-      vector <- c()
-      bin <- 1
-      #input "return"  to finish loop
-      while(bin != ""){ 
-        #re-enter the bin vector
-        bin <- readline(prompt="Enter the number of bins: ")->bin1
-        bin1 <- as.numeric(bin1)
-        vector <- c(vector, bin1)
-      }
-      vector <- na.omit(vector) #cancel the NA
-    }
-    
-    # if the bin vector is not integer, round it
-    if (!is.integer(vector)) {        
-      vector <- round(vector)
-    }
-  }
-  return(explore(data_frame,switch,threshold,vector))
-}
-
-# check
-explore_2(diamonds,"osjfs",1.5)
